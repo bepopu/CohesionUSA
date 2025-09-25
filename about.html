@@ -6,7 +6,10 @@
     <meta name="theme-color" content="#000000"> 
     <title>About Us</title>
     <style>
-        html, body { margin:0; height:100%; background:#000; color:#000000; }
+        html, body {
+            overflow-x: hidden;
+            margin:0; height:100%; background:#000; color:#000000;
+        }
         :root { --slide-ms: 2200ms}
         body {
             background-color: black;
@@ -73,13 +76,32 @@
             z-index: 1;              /* push it behind content */
             opacity: 0.0;             /* optional: fade effect */
         }   
+        /* #region music_button */
+        .music {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 4;
+        }
 
+        .music button {
+            background: rgba(0, 0, 0, 0);
+            padding: 8px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: pointer;
+            color: white;
+            border: none;
+        }
+        /* #endregion music_button */
         .content {
             position: relative;
             z-index: 2;               /* keep content above */
             color: black;
             padding: 40px;
-        }    
+        }  
+        /* #region text styling */
         .summary {
             text-align: left;
             margin-top: 10px auto 0;
@@ -87,24 +109,29 @@
             padding: 40px 150px;
             color:aliceblue;
         }
-
         .summary p {
             margin: 0 0 12px;   /* normal spacing */
             line-height: .5;
         }
-        
         .summary .phonetic {
             margin-top: 2px;    /* much smaller gap above this line */
             font-style: italic; /* optional: style it differently */
             font-size: 80%;
         }
-
-        .summary .definition {
+        .summary .email {
             margin-left: 45px;    
             margin-top: 35px;
             font-style: italic;
+            transform: translateX(320px);
+            font-size: 80%;
         }            
-
+        .summary .remark {
+            margin-left: 45px;    
+            margin-top: 35px;
+            font-style: italic;
+            font-size: 30px;
+        }    
+        /* #endregion text styling */
         #transition_overlay {
             position: fixed; inset: 0; z-index: 1; pointer-events: none;
             background-image: url("images/alex.png");
@@ -113,14 +140,19 @@
             background-repeat: no-repeat;
             transform: translateX(0); /*idle-state*/
             opacity: 0.15;
+            overflow: hidden;
         }
 
         .slide-in-right #transition_overlay {
-            animation: alex-enter-right var(--slide-ms) linear forwards;
+            animation: alex-enter-right var(--slide-ms) ease forwards;
         }
 
         .enter-from-right .content {
             animation: content-enter-right var(--slide-ms) ease forwards;
+        }
+
+        .alex-out .content {
+            animation: content-leave-right var(--slide-ms) ease forwards;
         }
 
         .alex-out #transition_overlay {
@@ -128,40 +160,24 @@
         }
 
         @keyframes content-enter-right { /* content ease */
-        0% {
-            transform: translateX(12%);
-            /* fast-ish first segment (0% -> 85%) */
-            animation-timing-function: cubic-bezier(0.0, 0, 0.65, 1);
+            from {transform: translateX(12%); opacity: 0;}
+            to { transform: translateX(0%); opacity: 1;}
         }
-        85% {
-            transform: translateX(0%);
-            /* ultra-slow final segment (85% -> 100%) */
-            animation-timing-function: cubic-bezier(0, 0, 0.999, 1);
-        }
-        100% {
-            transform: translateX(0%);
-        }
+
+        @keyframes content-leave-right { /* content ease */
+            from {transform: translateX(0%); opacity: 1;}
+            to { transform: translateX(-12%); opacity: 0;}
         }
 
         @keyframes alex-enter-right {
-        0% {
-            transform: translateX(80%);
-            /* fast-ish first segment (0% -> 85%) */
-            animation-timing-function: cubic-bezier(0.0, 0, 0.65, 1);
-        }
-        85% {
-            transform: translateX(-30%);
-            /* ultra-slow final segment (85% -> 100%) */
-            animation-timing-function: cubic-bezier(0, 0, 0.999, 1);
-        }
-        100% {
-            transform: translateX(-30%);
-        }
+            from {transform: translateX(120%);}
+            to { transform: translateX(-30%);}
         }
 
         @keyframes alex-out {
-            from {transform: translateX(-30%);}
-            to {transform: translateX(-100%)}
+            0% {transform: translateX(-30%);}
+            60% {transform: translateX(-150%)}
+            100% {transform: translateX(-150%)}
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -185,13 +201,17 @@
             <h1>About</h1>
             <div class="summary">
                 <p class="phonetic">A collection of ideas based in rural Appalachia</p>
-                <p class="definition">Pennsylvania, we are on our way.</p>
-                <p class="definition">thirdparty@cohesionusa.org</p>
+                <p class="remark">Pennsylvania, we are on our way.</p>
+                <p class="email">thirdparty@cohesionusa.org</p>
             </div>
         </div>
+    <div class="music">
+        <button onclick="playMusic()">▶ Play</button>
+        <button onclick="pauseMusic()">⏸ Pause</button>
+    </div>
     <script>
         (function () {
-        const DURATION = 500; // must match --slide-ms
+        const DURATION = 1000; // must match --slide-ms
 
         function handleClick(e) {
         const a = e.target.closest('a[data-transition]');
@@ -211,4 +231,3 @@
 </body>
 
 </html>
-
