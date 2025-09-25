@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000"> 
     <title>About Us</title>
     <style>
+        html, body { margin:0; height:100%; background:#000; color:#000000; }
+        :root { --slide-ms: 2200ms}
         body {
             background-color: black;
             text-align: center;
@@ -68,7 +71,7 @@
             background-position: -500px;
             background-repeat: no-repeat;
             z-index: 1;              /* push it behind content */
-            opacity: 0.05;             /* optional: fade effect */
+            opacity: 0.0;             /* optional: fade effect */
         }   
 
         .content {
@@ -101,23 +104,110 @@
             margin-top: 35px;
             font-style: italic;
         }            
+
+        #transition_overlay {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background-image: url("images/alex.png");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform: translateX(0); /*idle-state*/
+            opacity: 0.15;
+        }
+
+        .slide-in-right #transition_overlay {
+            animation: alex-enter-right var(--slide-ms) linear forwards;
+        }
+
+        .enter-from-right .content {
+            animation: content-enter-right var(--slide-ms) ease forwards;
+        }
+
+        .alex-out #transition_overlay {
+            animation: alex-out var(--slide-ms) ease-in forwards;
+        }
+
+        @keyframes content-enter-right { /* content ease */
+        0% {
+            transform: translateX(12%);
+            /* fast-ish first segment (0% -> 85%) */
+            animation-timing-function: cubic-bezier(0.0, 0, 0.65, 1);
+        }
+        85% {
+            transform: translateX(0%);
+            /* ultra-slow final segment (85% -> 100%) */
+            animation-timing-function: cubic-bezier(0, 0, 0.999, 1);
+        }
+        100% {
+            transform: translateX(0%);
+        }
+        }
+
+        @keyframes alex-enter-right {
+        0% {
+            transform: translateX(80%);
+            /* fast-ish first segment (0% -> 85%) */
+            animation-timing-function: cubic-bezier(0.0, 0, 0.65, 1);
+        }
+        85% {
+            transform: translateX(-30%);
+            /* ultra-slow final segment (85% -> 100%) */
+            animation-timing-function: cubic-bezier(0, 0, 0.999, 1);
+        }
+        100% {
+            transform: translateX(-30%);
+        }
+        }
+
+        @keyframes alex-out {
+            from {transform: translateX(-30%);}
+            to {transform: translateX(-100%)}
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .slide-in-right #transition_overlay,
+            .enter-from-right .content,
+            .alex-out #transition_overlay {
+            animation: none !important;
+            }
+        }       
     </style>
 </head>
-<body>
+<body class="slide-in-right enter-from-right">
     <div class="bg"></div>
+    <div id="transition_overlay" aria-hidden="true"></div>
         <div class="content">
             <nav>
                 <img src="images/blackamerica.jpg" alt="blackamerica">
-                <a href="index.html">Home</a>
-                <a href="about.html">About</a>
+                <a href="index.html" data-transition>Home</a>
+                <a href="about.html" >About</a>
             </nav>
             <h1>About</h1>
             <div class="summary">
                 <p class="phonetic">A collection of ideas based in rural Appalachia</p>
-                <p class="phonetic">N/A</p>
+                <p class="definition">Pennsylvania, we are on our way.</p>
+                <p class="definition">thirdparty@cohesionusa.org</p>
             </div>
         </div>
+    <script>
+        (function () {
+        const DURATION = 500; // must match --slide-ms
 
+        function handleClick(e) {
+        const a = e.target.closest('a[data-transition]');
+        if (!a) return;
+        e.preventDefault();
+
+        // Add class to start the overlay animation
+        document.body.classList.add('alex-out');
+
+        // Navigate after animation completes
+        setTimeout(() => { window.location.href = a.href; }, DURATION);
+        }
+
+        document.addEventListener('click', handleClick, false);
+        })();
+    </script>
 </body>
 
 </html>
