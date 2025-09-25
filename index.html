@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
     <title>
         Cohesion USA
     </title>
     <style>
+        html, body { margin:0; height:100%; background:#000; color:#000000; }
+        :root { --slide-ms: 2200ms; }
 
         body {
             text-align: center;
             background-color: rgb(0, 0, 0);
         }
+
+        /* #region definition */
 
         .summary {
             text-align: left;
@@ -42,7 +47,8 @@
             text-align: center;
             margin-top: 100px;
         }
-
+        /* #endregion definition */
+        /* #region h1 */
         h1 {
             position: relative;
             font-family: 'Courier New', Courier, monospace;
@@ -54,6 +60,17 @@
             margin-top: 80px;
         }
 
+        h1::after {
+            content: "";
+            display: block;
+            width: 100%;              /* make it smaller than text */
+            height: 8px;
+            margin: 10px auto 0;     /* auto centers it */
+            background-color: black;
+            border-radius: 5px;
+        }
+        /* #endregion h1 */
+        /* #region Toolbar Nav */
         nav {
             background-color: rgba(0, 0, 0, 0);
             overflow: hidden; /* keeps items inside */
@@ -73,16 +90,7 @@
             text-align: left;
             padding: 10px 20px;
         }
-
-        h1::after {
-            content: "";
-            display: block;
-            width: 100%;              /* make it smaller than text */
-            height: 8px;
-            margin: 10px auto 0;     /* auto centers it */
-            background-color: black;
-            border-radius: 5px;
-        }
+        /*#endregion Toolbar Nav*/
 
         .romandesign {
             width: 1000px;
@@ -102,25 +110,84 @@
             background-size: cover;
             background-position: 220px;
             background-repeat: no-repeat;
-            z-index: 1;              /* push it behind content */
-            opacity: 0.05;             /* optional: fade effect */
+            z-index: 0;              /* push it behind content */
+            opacity: 0.0;             /* optional: fade effect */
         }
 
         .content {
             position: relative;
             z-index: 2;               /* keep content above */
-            color: black;
+            color: rgb(0, 0, 0);
             padding: 40px;
         }
+
+        /* #region transition */
+        #transition_overlay {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background-image: url("images/image.png");
+            background-size: cover;
+            background-position: 220px;
+            background-repeat: no-repeat;
+            transform: translateX(0); /*idle-state*/
+            opacity: 0.15; /*hidden until used*/
+        }
+
+        .slide-out-left #transition_overlay {
+            /* when this is called, fade in and slide left */
+            opacity: 0.15;
+            animation: overlay-slide-left var(--slide-ms) ease-in forwards;
+        }
+        .slide-in #transition_overlay {
+            opacity: 0.15;
+            animation: slide-in var(--slide-ms) ease forwards;
+        }
+        .slide-out-left .content {
+            animation: content-nudge-left var(--slide-ms) ease-in forwards;
+        }
+        .enter-from-right .content {
+            animation: content-enter-right var(--slide-ms) ease forwards;
+        }
+
+        @keyframes overlay-slide-left {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-95%); }
+        }
+
+        @keyframes content-nudge-left {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-12%); opacity: 1; }
+        }
+
+        @keyframes content-enter-right {
+            from { transform: translateX(12%); opacity: 0; }
+            to   { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slide-in {
+            from {transform: translateX(80%);}
+            to { transform: translateX(0%);}
+        }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .slide-out-left #transition_overlay,
+            .slide-out-left .content,
+            .enter-from-right .content {
+            animation: none !important;
+            }
+        }
+        /* #endregion transition */
     </style>
 </head>
-<body>
+<body class="enter-from-right slide-in">
     <div class="bg"></div>
+    <div id="transition_overlay" aria-hidden="true"></div>
     <div class="content">
+    
         <nav>
             <img src="images/blackamerica.jpg" alt="blackamerica">
             <a href="index.html">Home</a>
-            <a href="about.html">About</a>
+            <a href="about.html" data-transition>About</a>
         </nav>
 
         <div class="header-wrapper">
@@ -134,6 +201,25 @@
             <p class="definition">The belief that if a nation's people are to be completely unified in spirit, mind, and body throughout generations, that they are to have a will that of gods.</p>
         </div>
     </div>
+    <script>
+        (function () {
+        const DURATION = 900; // must match --slide-ms
+
+        function handleClick(e) {
+        const a = e.target.closest('a[data-transition]');
+        if (!a) return;
+        e.preventDefault();
+
+        // Add class to start the overlay animation
+        document.body.classList.add('slide-out-left');
+
+        // Navigate after animation completes
+        setTimeout(() => { window.location.href = a.href; }, DURATION);
+        }
+
+        document.addEventListener('click', handleClick, false);
+        })();
+    </script>
 </body>
 </html>
 
