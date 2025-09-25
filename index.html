@@ -8,7 +8,10 @@
         Cohesion USA
     </title>
     <style>
-        html, body { margin:0; height:100%; background:#000; color:#000000; }
+        html, body {
+            overflow-x: hidden; /* no horizontal scrollbars */
+            margin:0; height:100%; background:#000; color:#000000;
+        }
         :root { --slide-ms: 2200ms; }
 
         body {
@@ -48,6 +51,25 @@
             margin-top: 100px;
         }
         /* #endregion definition */
+        /* #region music_button */
+        .music {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 4;
+        }
+
+        .music button {
+            background: rgba(0, 0, 0, 0);
+            padding: 8px 16px;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: pointer;
+            color: white;
+            border: none;
+        }
+        /* #endregion music_button */
         /* #region h1 */
         h1 {
             position: relative;
@@ -130,11 +152,11 @@
             background-repeat: no-repeat;
             transform: translateX(0); /*idle-state*/
             opacity: 0.15; /*hidden until used*/
+            overflow: hidden;
         }
 
         .slide-out-left #transition_overlay {
             /* when this is called, fade in and slide left */
-            opacity: 0.15;
             animation: overlay-slide-left var(--slide-ms) ease-in forwards;
         }
         .slide-in #transition_overlay {
@@ -142,20 +164,21 @@
             animation: slide-in var(--slide-ms) ease forwards;
         }
         .slide-out-left .content {
-            animation: content-nudge-left var(--slide-ms) ease-in forwards;
+            animation: content-leave-left var(--slide-ms) ease forwards;
         }
         .enter-from-right .content {
             animation: content-enter-right var(--slide-ms) ease forwards;
         }
 
         @keyframes overlay-slide-left {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-95%); }
+            0% { transform: translateX(0); }
+            60%   { transform: translateX(-145%); }
+            100%   { transform: translateX(-145%); }
         }
 
-        @keyframes content-nudge-left {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-12%); opacity: 1; }
+        @keyframes content-leave-left {
+            from { transform: translateX(0); opacity: 1;}
+            to   { transform: translateX(-12%); opacity: 0; }
         }
 
         @keyframes content-enter-right {
@@ -164,7 +187,7 @@
         }
 
         @keyframes slide-in {
-            from {transform: translateX(80%);}
+            from {transform: translateX(85%);}
             to { transform: translateX(0%);}
         }
 
@@ -172,7 +195,8 @@
         @media (prefers-reduced-motion: reduce) {
             .slide-out-left #transition_overlay,
             .slide-out-left .content,
-            .enter-from-right .content {
+            .enter-from-right .content,
+            .slide-in #transition_overlay {
             animation: none !important;
             }
         }
@@ -183,7 +207,6 @@
     <div class="bg"></div>
     <div id="transition_overlay" aria-hidden="true"></div>
     <div class="content">
-    
         <nav>
             <img src="images/blackamerica.jpg" alt="blackamerica">
             <a href="index.html">Home</a>
@@ -201,9 +224,13 @@
             <p class="definition">The belief that if a nation's people are to be completely unified in spirit, mind, and body throughout generations, that they are to have a will that of gods.</p>
         </div>
     </div>
+    <div class="music">
+        <button onclick="playMusic()">▶ Play</button>
+        <button onclick="pauseMusic()">⏸ Pause</button>
+    </div>
     <script>
         (function () {
-        const DURATION = 900; // must match --slide-ms
+        const DURATION = 1000; // must match --slide-ms
 
         function handleClick(e) {
         const a = e.target.closest('a[data-transition]');
@@ -211,6 +238,8 @@
         e.preventDefault();
 
         // Add class to start the overlay animation
+        document.body.classList.remove('enter-from-right');
+        document.body.classList.remove('slide-in');
         document.body.classList.add('slide-out-left');
 
         // Navigate after animation completes
@@ -222,4 +251,3 @@
     </script>
 </body>
 </html>
-
