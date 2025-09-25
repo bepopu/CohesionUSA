@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Cohesion USA
+    </title>
+    <style>
+
+        body {
+            text-align: center;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .summary {
+            text-align: left;
+            margin-top: 10px auto 0;
+            display: block;
+            padding: 40px 150px;
+            color:aliceblue;
+        }
+
+        .summary p {
+            margin: 0 0 12px;   /* normal spacing */
+            line-height: .5;
+        }
+        
+        .summary .phonetic {
+            margin-top: 2px;    /* much smaller gap above this line */
+            font-style: italic; /* optional: style it differently */
+            font-size: 80%;
+        }
+
+        .summary .definition {
+            margin-left: 45px;    
+            margin-top: 35px;
+            font-style: italic;
+        }
+
+        .subheader {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        h1 {
+            position: relative;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: rgba(128, 0, 0, 0.61);
+            padding: 20px 40px;
+            display: inline-block;
+            border-radius: 0px;
+            z-index: 2;
+            margin-top: 80px;
+        }
+
+        nav {
+            background-color: rgba(0, 0, 0, 0);
+            overflow: hidden; /* keeps items inside */
+            z-index: 0;
+        }
+
+        nav img {
+            float: left;
+            height: 25px;
+            padding: 7px 20px;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: left;
+            padding: 10px 20px;
+        }
+
+        h1::after {
+            content: "";
+            display: block;
+            width: 100%;              /* make it smaller than text */
+            height: 8px;
+            margin: 10px auto 0;     /* auto centers it */
+            background-color: black;
+            border-radius: 5px;
+        }
+
+        .romandesign {
+            width: 1000px;
+            height: auto;
+            opacity: 0.2;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }        
+
+        .bg {
+            position: fixed;          /* stay put while scrolling */
+            top: 0;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            background-image: url("images/image.png"), url("images/axe.png");
+            background-size: cover, 600px;
+            background-position: 220px ,0px -180px;
+            background-repeat: no-repeat;
+            z-index: 1;              /* push it behind content */
+            opacity: 0.05;             /* optional: fade effect */
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;               /* keep content above */
+            color: black;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="content">
+        <nav>
+            <img src="images/blackamerica.jpg" alt="blackamerica">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+        </nav>
+
+        <div class="header-wrapper">
+            <h1>Cohesion USA</h1>
+        </div>
+
+        <div class="summary">
+            <p style="font-weight: bold;">Cohesionism</p>
+            <p class="phonetic">"/k&#333;&#x2C8;h&#275;ZH&#601;n/</p>
+            <p></p>
+            <p class="definition">The belief that if a nation's people are to be completely unified in spirit, mind, and body throughout generations, that they are to have a will that of gods.</p>
+        </div>
+    </div>
+</body>
+</html>
